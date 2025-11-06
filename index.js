@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs, { write, writeFile } from "fs";
 import { exit } from "process";
 import readline from "readline";
 import { deprecate } from "util";
@@ -7,13 +7,17 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
+function transactions(depoOrWithdr, user) {
+  if (depoOrWithdr === "deposit") {
+    const line = fs.readFileSync("users.txt", "utf-8")
+  }else if (depoOrWithdr === "withdraw") {
 
+  }else{console.log("Error")}
+}
 // readUsers(): users.txt-ээс унших
 function readUsers() {
   if (!fs.existsSync("users.txt")) return [];
-
   const data = fs.readFileSync("users.txt", "utf-8").trim();
-
   return data.split("\n").map((line) => {
     const [username, password, balance] = line.split(",");
     return { username, password, balance: parseInt(balance) };
@@ -94,9 +98,9 @@ function showMenu(user) {
                 break;
             case 2:
                 rl.question("Нэмэх дүнгээ оруулна уу: ", (deposit) => {
+                    const user = readUsers();
                     user.balance = user.balance + deposit;
-                    readUsers();
-                    
+                    fs.writeFile("users.txt", user.balance)
                 })
                 break;
             case 3:
