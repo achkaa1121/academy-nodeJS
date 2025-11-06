@@ -1,1 +1,1 @@
- Achka,1121,2000
+{"username":"Achka","password":"1121","balance":2223}

@@ -7,13 +7,6 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-function transactions(depoOrWithdr, user) {
-  if (depoOrWithdr === "deposit") {
-    const line = fs.readFileSync("users.txt", "utf-8")
-  }else if (depoOrWithdr === "withdraw") {
-
-  }else{console.log("Error")}
-}
 // readUsers(): users.txt-ээс унших
 function readUsers() {
   if (!fs.existsSync("users.txt")) return [];
@@ -34,7 +27,8 @@ function writeUsers(users) {
 // logTransaction(): transactions.txt-д бичих
 function logTransaction(username, type, amount) {
   // 👉 Гүйлгээний лог бичих код
-
+  // const line = users.map((u) => ` ${username}, ${type}, ${amount}\n`);
+  // console.log(line, "line");
 }
 
 // =======================
@@ -62,25 +56,25 @@ function register() {
 // Login + Menu
 // =======================
 function login() {
-const users = readUsers()
+  const users = readUsers();
 
   rl.question("Нэвтрэх нэрээ оруулна уу: ", (username) => {
-    const user = users.find(user => user.username === username);
-    console.log(user)
+    const user = users.find((user) => user.username === username);
+    console.log(user);
     if (!user) {
-        console.log("Хэрэглэгч олдсонгүй");
-        return;
+      console.log("Хэрэглэгч олдсонгүй");
+      return;
     }
 
     rl.question("Нууц үгээ оруулна уу: ", (pass) => {
-        const passTrueOrNot = user.password == pass
-        if (!passTrueOrNot) {
-            console.log("Нууц үг буруу байна");
-            return;
-        }
-        showMenu(user);
-    })
-  })
+      const passTrueOrNot = user.password == pass;
+      if (!passTrueOrNot) {
+        console.log("Нууц үг буруу байна");
+        return;
+      }
+      showMenu(user);
+    });
+  });
   // 👉 Нэвтрэх нэр асуух
   // 👉 PIN код асуух
   // 👉 Хэрэглэгчийн мэдээллийг шалгах
@@ -88,30 +82,43 @@ const users = readUsers()
 }
 
 function showMenu(user) {
+  console.log("amjilttai", user);
+  const users = readUsers();
 
-    console.log("amjilttai", user)
+  rl.question(
+    "1. Үлдэгдэл шалгах, 2. Мөнгө нэмэх, 3. Мөнгө авах, 4. Гарах: ",
+    (option) => {
+      {
+        switch (parseInt(option)) {
+          case 1:
+            console.log(user.balance);
+            break;
+          case 2:
+            rl.question("Нэмэх дүнгээ оруулна уу: ", (deposit) => {
+              // const users = readUsers();
+              const user = users[0];
 
-    rl.question("1. Үлдэгдэл шалгах, 2. Мөнгө нэмэх, 3. Мөнгө авах, 4. Гарах: ", (option) => {{
-        switch(parseInt(option)){
-            case 1:
-                console.log(user.balance);
-                break;
-            case 2:
-                rl.question("Нэмэх дүнгээ оруулна уу: ", (deposit) => {
-                    const user = readUsers();
-                    user.balance = user.balance + deposit;
-                    fs.writeFile("users.txt", user.balance)
-                })
-                break;
-            case 3:
-                rl.question("Авах дүнгээ оруулах: ", (withdraw) => {
-                    user.balance = user.balance - withdraw;
-                })
-                break;
-            case 4:
-                exit();
+              user.balance = user.balance + parseInt(deposit);
+
+              fs.writeFile("users.txt", JSON.stringify(user), () => {
+                console.log("amjilttia");
+                process.exit();
+              });
+              // logTransaction(user.username, "deposit", deposit);
+              // fs.writeFile("transactions.tx", ut)
+            });
+            break;
+          case 3:
+            rl.question("Авах дүнгээ оруулах: ", (withdraw) => {
+              user.balance = user.balance - withdraw;
+            });
+            break;
+          case 4:
+            exit();
         }
-    }})
+      }
+    }
+  );
   // 👉 Menu-г харуулах
   // 1. Үлдэгдэл шалгах
   // 2. Мөнгө нэмэх
