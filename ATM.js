@@ -6,8 +6,12 @@ const rl = Readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-function readUsers() {}
-function readUsers() {}
-function readUsers() {}
-function readUsers() {}
-function readUsers() {}
+function readUsers() {
+  const data = fs.readFileSync("users.json", "utf-8");
+  return data.split("/n").map(line);
+}
+function writeUsers() {}
+function logTransaction() {}
+function register() {}
+function login() {}
+function showMenu() {}
