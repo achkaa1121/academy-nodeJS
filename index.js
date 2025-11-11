@@ -1,144 +1,85 @@
-import fs, { write, writeFile } from "fs";
 import { exit } from "process";
-import readline from "readline";
-import { deprecate } from "util";
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-// readUsers(): users.txt-ээс унших
-function readUsers() {
-  if (!fs.existsSync("users.txt")) return [];
-  const data = fs.readFileSync("users.txt", "utf-8").trim();
-  return data.split("\n").map((line) => {
-    const [username, password, balance] = line.split(",");
-    return { username, password, balance: parseInt(balance) };
+import inquirer from "inquirer";
+import fs from "node:fs/promises";
+import { bankAnswer } from "./ATM.js";
+const getUsers = async () => {
+  const userRawData = await fs.readFile("users.json", "utf-8");
+  const users = JSON.parse(userRawData);
+  return users;
+};
+const login = async () => {
+  const { username, password } = await inquirer.prompt([
+    {
+      type: "input",
+      name: "username",
+      message: "Enter your username",
+    },
+    {
+      type: "password",
+      name: "password",
+      message: "Enter your password",
+    },
+  ]);
+  const users = await getUsers();
+  const user = users.find((value) => {
+    return value.username === username && value.password === password;
   });
-  // 👉 Хэрэглэгчийн мэдээллийг унших код
-}
-
-// writeUsers(): users.txt-д бичих
-function writeUsers(users) {
-  const line = users.map((u) => ` ${u.username}, ${u.password}, ${u.balance}`);
-  fs.writeFileSync("users.txt", line.join(" \n "));
-}
-
-// logTransaction(): transactions.txt-д бичих
-function logTransaction(username, type, amount) {
-  // 👉 Гүйлгээний лог бичих код
-  // const line = users.map((u) => ` ${username}, ${type}, ${amount}\n`);
-  // console.log(line, "line");
-}
-
-// =======================
-// Register (шинэ хэрэглэгч)
-// =======================
-function register() {
-  const user = readUsers();
-
-  rl.question("Нэвтрэх нэрээ оруулна уу: ", (username) => {
-    rl.question("Нууц үгээ оруулна уу: ", (password) => {
-      rl.question("Дансан дахь мөнгөө оруулна уу: ", (balance) => {
-        const newUser = { username, password, balance };
-        user.push(newUser);
-        writeUsers(user);
-      });
-    });
-  });
-  // 👉 Шинэ хэрэглэгчийн нэр асуух
-  // 👉 PIN код асуух
-  // 👉 Эхний үлдэгдэл асуух
-  // 👉 users.txt-д хадгалах
-}
-
-// =======================
-// Login + Menu
-// =======================
-function login() {
-  const users = readUsers();
-
-  rl.question("Нэвтрэх нэрээ оруулна уу: ", (username) => {
-    const user = users.find((user) => user.username === username);
-    console.log(user);
-    if (!user) {
-      console.log("Хэрэглэгч олдсонгүй");
-      return;
-    }
-
-    rl.question("Нууц үгээ оруулна уу: ", (pass) => {
-      const passTrueOrNot = user.password == pass;
-      if (!passTrueOrNot) {
-        console.log("Нууц үг буруу байна");
-        return;
-      }
-      showMenu(user);
-    });
-  });
-  // 👉 Нэвтрэх нэр асуух
-  // 👉 PIN код асуух
-  // 👉 Хэрэглэгчийн мэдээллийг шалгах
-  // 👉 showMenu дуудаж ажиллуулах
-}
-
-function showMenu(user) {
-  console.log("amjilttai", user);
-  const users = readUsers();
-
-  rl.question(
-    "1. Үлдэгдэл шалгах, 2. Мөнгө нэмэх, 3. Мөнгө авах, 4. Гарах: ",
-    (option) => {
-      {
-        switch (parseInt(option)) {
-          case 1:
-            console.log(user.balance);
-            break;
-          case 2:
-            rl.question("Нэмэх дүнгээ оруулна уу: ", (deposit) => {
-              // const users = readUsers();
-              const user = users[0];
-
-              user.balance = user.balance + parseInt(deposit);
-
-              fs.writeFile("users.txt", JSON.stringify(user), () => {
-                console.log("amjilttia");
-                process.exit();
-              });
-              // logTransaction(user.username, "deposit", deposit);
-              // fs.writeFile("transactions.tx", ut)
-            });
-            break;
-          case 3:
-            rl.question("Авах дүнгээ оруулах: ", (withdraw) => {
-              user.balance = user.balance - withdraw;
-            });
-            break;
-          case 4:
-            exit();
-        }
-      }
-    }
-  );
-  // 👉 Menu-г харуулах
-  // 1. Үлдэгдэл шалгах
-  // 2. Мөнгө нэмэх
-  // 3. Мөнгө авах
-  // 4. Гарах
-  // 👉 Хэрэглэгчийн сонголтоор switch case ашиглах
-}
-
-// =======================
-// Main
-// =======================
-console.log("==== ATM SYSTEM ====  1. Нэвтрэх 2. Бүртгүүлэх ");
-
-rl.question("Сонголтоо оруулна уу: ", (startChoice) => {
-  if (startChoice === "1") {
-    login();
-  } else if (startChoice === "2") {
-    register();
+  if (!user) {
+    console.log("username eswel password buruu bn!");
+    await auth();
   } else {
-    console.log("⚠️ Буруу сонголт!");
-    rl.close();
+    return bankAnswer(users, user);
   }
-});
+};
+const signup = async () => {
+  const { username, password, passwordVerify } = await inquirer.prompt([
+    {
+      type: "input",
+      name: "username",
+      message: "Enter your username",
+    },
+    {
+      type: "password",
+      name: "password",
+      message: "Enter your password",
+    },
+    {
+      type: "password",
+      name: "passwordVerify",
+      message: "Enter your password again",
+    },
+  ]);
+  if (password !== passwordVerify) {
+    console.log("Password validation failed!");
+    return signup();
+  }
+  const users = await getUsers();
+  const user = users.find((value) => {
+    return value.username === username;
+  });
+  if (user) {
+    console.log("Username not valid");
+    return signup();
+  }
+  users.push({ username, password, balance: 0 });
+  const userData = JSON.stringify(users);
+  await fs.writeFile("users.json", userData, "utf-8");
+  console.log("Signed up successfully!");
+  return login();
+};
+const auth = async () => {
+  const { authOption } = await inquirer.prompt([
+    {
+      type: "select",
+      name: "authOption",
+      message: "Login Or Signup",
+      choices: ["Login", "Signup"],
+    },
+  ]);
+  if (authOption === "Login") {
+    return login();
+  } else {
+    return signup();
+  }
+};
+auth();
