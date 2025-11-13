@@ -45,7 +45,15 @@ export const bankAnswer = async (users, user) => {
       break;
   }
 };
-const updateUser = async (users, user, amount, type, beforeAmount, whom) => {
+const updateUser = async (
+  users,
+  user,
+  balance,
+  amount,
+  type,
+  beforeAmount,
+  whom
+) => {
   const userData = JSON.stringify(users);
   await fs.writeFile("users.json", userData, "utf-8");
   const historyRawData = await fs.readFile("history.json", "utf-8");
@@ -55,7 +63,7 @@ const updateUser = async (users, user, amount, type, beforeAmount, whom) => {
   userHistories.push({
     type,
     amount,
-    balance: user.balance,
+    balance,
     balanceBefore: beforeAmount,
     time,
     whom,
@@ -79,7 +87,14 @@ const deposit = async (users, user) => {
   user.balance = balance;
   console.log("Succesfully deposited.");
   return (
-    await updateUser(users, user, amount, "deposit", beforeBalance),
+    await updateUser(
+      users,
+      user,
+      user.balance,
+      amount,
+      "deposit",
+      beforeBalance
+    ),
     bankAnswer(users, user)
   );
 };
@@ -101,11 +116,18 @@ const withdraw = async (users, user) => {
   user.balance = balance;
   console.log("Successfully withdrew.");
   return (
-    await updateUser(users, user, amount, "withdraw", beforeBalance),
+    await updateUser(
+      users,
+      user,
+      user.balance,
+      amount,
+      "withdraw",
+      beforeBalance
+    ),
     bankAnswer(users, user)
   );
 };
-const checkBalance = (user) => {
+const checkBalance = (users, user) => {
   console.log("Your balance:" + user.balance);
   return bankAnswer(users, user);
 };
@@ -184,13 +206,15 @@ const transaction = async (users, user) => {
     await updateUser(
       users,
       user,
+      user.balance,
       amount,
-      "transacted",
+      "withdraw",
       beforeBalance,
       toUser.username
     ),
     await updateUser(
       users,
+      toUser,
       toUser.balance,
       amount,
       "received",
