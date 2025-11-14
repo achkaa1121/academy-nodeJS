@@ -2,7 +2,7 @@
   "name": "idk",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "indexAPI.js",
   "type": "module",
   "scripts": {
     "dev": "node index.js",
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/achkaa1121/academy-nodeJS#readme",
   "dependencies": {
+    "express": "^5.1.0",
     "inquirer": "^12.11.0"
   }
 }

@@ -1,4 +1,3 @@
-import { exit } from "node:process";
 import fs from "node:fs/promises";
 import inquirer from "inquirer";
 export const bankAnswer = async (users, user) => {

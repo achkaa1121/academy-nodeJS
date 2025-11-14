@@ -1,4 +1,3 @@
-import { exit } from "process";
 import inquirer from "inquirer";
 import fs from "node:fs/promises";
 import { bankAnswer } from "./ATM.js";
