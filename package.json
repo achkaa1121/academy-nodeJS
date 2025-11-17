@@ -5,8 +5,7 @@
   "main": "indexAPI.js",
   "type": "module",
   "scripts": {
-    "dev": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/index.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +19,7 @@
   "homepage": "https://github.com/achkaa1121/academy-nodeJS#readme",
   "dependencies": {
     "express": "^5.1.0",
-    "inquirer": "^12.11.0"
+    "inquirer": "^12.11.0",
+    "nodemon": "^3.1.11"
   }
 }
