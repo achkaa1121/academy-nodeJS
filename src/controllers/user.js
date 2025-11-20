@@ -1,20 +1,21 @@
-import fs from "node:fs/promises";
-import { createRequire } from "node:module";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 export const login = (req, res) => {
   const userEmail = req.body.email;
-  const pass = req.body.pass;
-  const require = createRequire(import.meta.url);
-  const loginServices = async (userEmail, pass) => {
-    const users = await JSON.parse(require("../../data/users.json"));
-    const user = users.find((value) => {
-      return value.email === userEmail && value.password === pass;
-    });
-    if (!user) {
-      res.send("wrong email or password");
-    } else {
-      res.send("success");
-    }
-  };
-  loginServices(userEmail, pass);
+  const pass = req.body.password;
+
+  const dataPath = path.join(__dirname, "../../data/users.json");
+  const users = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+  const user = users.find((u) => u.email === userEmail && u.password === pass);
+
+  if (!user) return res.status(401).send("Wrong email or password");
+
+  res.send("Success");
 };
+
 export const signup = () => {};

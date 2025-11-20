@@ -1,20 +1,17 @@
-import { response } from "express";
-
-const addBtn = document.getElementById("loginButton");
-
-const blogs = [];
-
-const addBtnFunc = async () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  console.log(email, password);
+const loginButton = document.getElementById("loginButton");
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const emailValue = email.value;
+const passwordValue = password.value;
+const loginButtonFunc = async () => {
   const response = await fetch("http://localhost:3000/user/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ emailValue, passwordValue }),
   });
-  return console.log(response, "response");
+  console.log("L");
+  console.log(emailValue, passwordValue);
 };
-addBtn.addEventListener("click", addBtnFunc);
+loginButton.addEventListener("click", loginButtonFunc);
