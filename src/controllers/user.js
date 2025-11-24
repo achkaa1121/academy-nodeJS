@@ -8,7 +8,6 @@ const __dirname = path.dirname(__filename);
 export const login = (req, res) => {
   const userEmail = req.body.email;
   const pass = req.body.password;
-
   const dataPath = path.join(__dirname, "../../data/users.json");
   const users = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
   const user = users.find((u) => u.email === userEmail && u.password === pass);
