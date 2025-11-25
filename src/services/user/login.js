@@ -1,14 +1,18 @@
 import fs from "node:fs/promises";
-import { createRequire } from "node:module";
-const require = createRequire(import.meta.url);
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 export const loginServices = async (email, password) => {
-  const users = await JSON.parse(require("../../../data/users.json"));
+  const dataPath = path.join(__dirname, "../../../data/users.json");
+  const usersData = await fs.readFile(dataPath, "utf-8");
+  const users = await JSON.parse(usersData);
   const user = users.find((value) => {
     return value.email === email && value.password === password;
   });
   if (!user) {
-    console.log;
+    return;
   } else {
-    return true;
+    return email;
   }
 };

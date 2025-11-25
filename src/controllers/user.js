@@ -1,20 +1,18 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-export const login = (req, res) => {
-  const userEmail = req.body.email;
-  const pass = req.body.password;
-  const dataPath = path.join(__dirname, "../../data/users.json");
-  const users = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
-  const user = users.find((u) => u.email === userEmail && u.password === pass);
-
-  if (!user) return res.status(401).send("Wrong email or password");
-
-  res.send("Success");
+import { loginServices } from "../services/user/login.js";
+export const login = async (req, res) => {
+  const email = req.body.emailValue;
+  const password = req.body.passwordValue;
+  const user = await loginServices(email, password);
+  if (!user) {
+    return res.status(401).send("Wrong email or password");
+  }
+  res.cookie("user", "userID", {
+    httpOnly: false,
+    secure: false,
+  });
+  res.json({
+    user: "userID",
+  });
 };
 
 export const signup = () => {};
