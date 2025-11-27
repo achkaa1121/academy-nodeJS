@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { login, logout } from "../controllers/user.js";
+import { login, signup } from "../controllers/user.js";
 
 export const userRouters = new Router();
 
 userRouters.post("/login", login);
-userRouters.post("/logout", logout);
+userRouters.post("/signup", signup);

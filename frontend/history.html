@@ -6,24 +6,40 @@
     <title>Document</title>
   </head>
   <body>
-    <h1>bank</h1>
-
+    <h1>History</h1>
+    <table>
+      <th>
+        <tr>
+          <td>Type</td>
+          <td>Amount</td>
+          <td>Balance</td>
+          <td>Time</td>
+          <td>Who to</td>
+        </tr>
+      </th>
+      <tr>
+        <td id="type"></td>
+        <td id="amount"></td>
+        <td id="balance"></td>
+        <td id="time"></td>
+        <td id="whom"></td>
+      </tr>
+    </table>
     <button id="logout" onclick="logout()">logout</button>
     <button id="deposit" onclick="deposit()">deposit</button>
+    <button id="withdraw" onclick="withdraw()">withdraw</button>
     <script>
       const logout = async () => {
-        const response = await fetch("http://localhost:3000/user/logout", {
+        const response = await fetch("http://localhost:3000/bank/logout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });
-
         if (response.ok) {
           window.location.href = "/login.html";
         } else {
           window.alert("Amjiltgui");
         }
       };
-
       const deposit = async () => {
         const response = await fetch("http://localhost:3000/bank/deposit", {
           method: "POST",
@@ -32,7 +48,6 @@
             amout: 3000,
           }),
         });
-
         if (response.ok) {
           window.location.href = "/login.html";
         } else {
