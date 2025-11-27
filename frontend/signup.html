@@ -4,12 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="stylesheet" href="/Styles/login.css">
   </head>
   <body>
-    <h1>Signup</h1>
-    <input id="username" placeholder="Username" type="text"></input>
-    <input id="password" placeholder="Password" type="password"></input>
-    <button id="signup" onclick="signup()">Signup</button>
+    <div class="login-container">
+        <h1>Signup</h1>
+        <input id="username" placeholder="Username" type="text"></input>
+        <input id="password" placeholder="Password" type="password"></input>
+        <button id="signup" onclick="signup()">Signup</button> <button id="login" onclick="login()">Login</button>
+    </div>
     <script>
       const signup = async () => {
         const username = document.getElementById("username");
