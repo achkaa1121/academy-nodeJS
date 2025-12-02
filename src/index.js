@@ -2,12 +2,10 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { userRouters } from "./routers/user.js";
 import { bankRouters } from "./routers/bank.js";
-
+import path from "path";
 const app = express();
-
 app.use(express.json());
 app.use(cookieParser());
-
 app.use((req, res, next) => {
   const userId = req.cookies.user;
   const publicPaths = ["/login.html", "/signup.html"];
@@ -19,7 +17,7 @@ app.use((req, res, next) => {
   }
   next();
 });
-app.use(express.static("frontend"));
+app.use(express.static(path.join(process.cwd(), "frontend")));
 app.use("/user", userRouters);
 app.use("/bank", bankRouters);
 app.listen(3000, () => {

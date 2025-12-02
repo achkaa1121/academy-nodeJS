@@ -11,7 +11,7 @@
         <h1>Signup</h1>
         <input id="username" placeholder="Username" type="text"></input>
         <input id="password" placeholder="Password" type="password"></input>
-        <button id="signup" onclick="signup()">Signup</button> <button id="login" onclick="login()">Login</button>
+        <button id="signup" onclick="signup()">Signup</button><button id="login" onclick="login()">Login</button>
     </div>
     <script>
       const signup = async () => {
@@ -33,6 +33,9 @@
           window.alert("Wrong!");
         }
       };
+      const login = async()=>{
+        window.location.href = "/login.html";
+      }
     </script>
   </body>
 </html>
