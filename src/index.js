@@ -12,6 +12,6 @@ app.use("/bank", bankRouters);
 
 await connectDb();
 
-app.listen(3000, () => {
-  console.log("express app running at 3000");
+app.listen(3001, () => {
+  console.log("express app running at 3001");
 });

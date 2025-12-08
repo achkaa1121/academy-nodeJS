@@ -1,13 +1,28 @@
+import {
+  createAccountService,
+  updateAccountService,
+  deleteAccountService,
+  getAllAccountsService,
+  getAccountByNumberService,
+  createTransactionService,
+  getTransactionsService,
+  getTransactionsByUserIdService,
+  getTransactionsByAccountNumberService,
+} from "../services/bank.js";
+
 // Шинэ данс үүсгэх
 export const createAccount = async (req, res) => {
   const { user_id, account_number, balance } = req.body;
-  res.json({});
+  const data = await createAccountService(user_id, account_number, balance);
+  return res.json(data);
 };
 
 // Дансны мэдээллийг шинэчлэх
 export const updateAccount = async (req, res) => {
-  const { id, user_id, account_number, balance } = req.body;
-  res.json({});
+  const { balance, account_number } = req.body;
+
+  const user = await updateAccountService(account_number, balance);
+  res.json(user);
 };
 
 // Данс устгах

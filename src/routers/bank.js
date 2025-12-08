@@ -18,7 +18,7 @@ export const bankRouters = new Router();
 bankRouters.get("/accounts", getAllAccounts);
 bankRouters.get("/accounts/:accountNumber", getAccountByNumber);
 bankRouters.post("/accounts", createAccount);
-bankRouters.put("/accounts/:accountNumber", updateAccount);
+bankRouters.post("/update-account", updateAccount);
 bankRouters.delete("/accounts/:accountNumber", deleteAccount);
 
 // Transaction-related

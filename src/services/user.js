@@ -38,9 +38,11 @@ export const getUserByIdService = async (id) => {
 };
 
 export const deleteUserService = async (id) => {
-  const response = await db.query(
-    `DELETE FROM users WHERE id = ${id} RETURNING *`
-  );
+  const response = await db.query("DELETE FROM account WHERE userid = $1", [
+    id,
+  ]);
+  await db.query("DELETE FROM users WHERE id = $1", [id]);
+
   return response.rows[0];
 };
 
