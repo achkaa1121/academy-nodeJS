@@ -1,9 +1,13 @@
 import { db } from "../db.js";
-
+interface Account {
+  account_number: string;
+  balance?: number;
+  user_id?: string;
+}
 export const createAccountService = async (
-  user_id,
-  account_number,
-  balance
+  user_id: string,
+  account_number: string,
+  balance: number
 ) => {
   console.log(user_id, account_number, balance);
   const response = await db.query(
@@ -12,14 +16,19 @@ export const createAccountService = async (
   );
   return response.rows[0];
 };
-export const updateAccountService = async (account_number, balance) => {
+export const updateAccountService = async (
+  account_number: string,
+  balance: number
+): Promise<Account | null> => {
   const response = await db.query(
-    `UPDATE account SET balance = ${balance}  WHERE account_number::text = $1`[
-      account_number
-    ]
+    `UPDATE account 
+     SET balance = $1 
+     WHERE account_number::text = $2 
+     RETURNING *`,
+    [balance, account_number]
   );
 
-  return response[0];
+  return response.rows[0] || null;
 };
 
 export const deleteAccountService = () => {};

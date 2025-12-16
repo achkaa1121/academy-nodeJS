@@ -1,4 +1,4 @@
-import { Router } from "express";
+import express from "express";
 import {
   createUser,
   updateUser,
@@ -7,7 +7,7 @@ import {
   getUserAccounts,
 } from "../controllers/user.js";
 
-export const userRouters = new Router();
+export const userRouters = express.Router();
 
 //user tei holbootoi post route uud
 

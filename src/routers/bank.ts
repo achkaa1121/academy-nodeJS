@@ -1,4 +1,4 @@
-import { Router } from "express";
+import express from "express";
 import {
   createTransaction,
   getTransactions,
@@ -12,7 +12,7 @@ import {
   //   deleteTransaction,
 } from "../controllers/bank.js";
 
-export const bankRouters = new Router();
+export const bankRouters = express.Router();
 
 // Account-related
 bankRouters.get("/accounts", getAllAccounts);
