@@ -5,8 +5,8 @@ import {
   getUserByIdService,
   deleteUserService,
   getUserAccountsService,
-  getUserTransactionsService,
-} from "../services/user.js";
+} from "../services/user.ts";
+import type { Request, Response } from "express";
 interface User {
   id?: string;
   username?: string;
@@ -15,7 +15,6 @@ interface User {
   firstname?: string;
   lastname?: string;
 }
-import { Request, Response } from "express";
 
 interface CreateUserBody {
   username: string;

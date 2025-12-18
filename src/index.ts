@@ -1,8 +1,8 @@
 import express from "express";
 import type { Request, Response } from "express";
-import { userRouters } from "./routers/user.js";
-import { bankRouters } from "./routers/bank.js";
-import { connectDb } from "./db.js";
+import { userRouters } from "./routers/user.ts";
+import { bankRouters } from "./routers/bank.ts";
+import { connectDb } from "./db.ts";
 import { request } from "express";
 
 const app = express();

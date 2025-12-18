@@ -1,4 +1,5 @@
-import { db } from "../db.js";
+import { db } from "../db.ts";
+import bcrypt from "bcrypt";
 interface User {
   id?: string;
   username: string;
@@ -12,9 +13,10 @@ export const createUserService = async (
   email: string,
   password: string
 ): Promise<User | null> => {
+  const hashedPassword = await bcrypt.hash(password, 10);
   const response = await db.query(
     `INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *`,
-    [username, email, password]
+    [username, email, hashedPassword]
   );
   return response.rows[0];
 };
@@ -32,12 +34,13 @@ export const updateUserService = async (
   firstname: string,
   lastname: string
 ) => {
+  const hashedPassword = bcrypt.hash(password, 10);
   const { rows } = await db.query(
     `UPDATE users 
      SET username = $1, email = $2, password = $3, firstname = $4, lastname = $5 
      WHERE id = $6 
      RETURNING *`,
-    [username, email, password, firstname, lastname, id]
+    [username, email, hashedPassword, firstname, lastname, id]
   );
 
   return rows[0];

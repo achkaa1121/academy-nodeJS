@@ -10,3 +10,9 @@ export const db = new pg.Client({
 export const connectDb = async () => {
   await db.connect();
 };
+
+//dev -> database A
+
+//test -> database B
+
+//production -> datatase C

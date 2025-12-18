@@ -8,7 +8,7 @@ import {
   getTransactionsService,
   getTransactionsByUserIdService,
   getTransactionsByAccountNumberService,
-} from "../services/bank.js";
+} from "../services/bank.ts";
 
 // Шинэ данс үүсгэх
 export const createAccount = async (req, res) => {

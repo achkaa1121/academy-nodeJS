@@ -4,7 +4,7 @@
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
-    "esModuleInterop": true,
+
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
@@ -35,11 +35,13 @@
     // Recommended Options
     "strict": true,
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": false,
+    "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "allowJs": true
+    "allowJs": true,
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true
   }
 }
