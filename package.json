@@ -2,10 +2,10 @@
   "name": "idk",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "node index.js",
+    "dev": "nodemon src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,5 +17,16 @@
   "bugs": {
     "url": "https://github.com/achkaa1121/academy-nodeJS/issues"
   },
-  "homepage": "https://github.com/achkaa1121/academy-nodeJS#readme"
+  "homepage": "https://github.com/achkaa1121/academy-nodeJS#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongoose": "^9.0.2",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.6",
+    "@types/express": "^5.0.6"
+  }
 }
