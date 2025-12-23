@@ -1,20 +1,25 @@
-import { MongoClient } from "mongodb";
-const uri =
-  "mongodb+srv://Achka1121:QrPqkWmvZrs2v835@backend-lesson.zrskizs.mongodb.net/?appName=backend-lesson";
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri);
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
+import express from "express";
+import type { Request, Response } from "express";
+import mongoose from "mongoose";
+import type { Document } from "mongoose";
+import { Schema, model } from "mongoose";
+import bodyParser from "body-parser";
+import { movieRouter } from "./movies/router.ts";
+// Express app
+const app = express();
+app.use(bodyParser.json());
+app.use("/movie", movieRouter);
+// MongoDB connection
+mongoose
+  .connect(
+    "mongodb+srv://Achka1121:QrPqkWmvZrs2v835@backend-lesson.zrskizs.mongodb.net/sample_mflix?appName=backend-lesson"
+  )
+  .then(() => {
+    console.log("MongoDB connected");
+  })
+  .catch((err: Error) => {
+    console.error("MongoDB connection error:", err);
+  });
+
+// Start server
+app.listen(3000, () => console.log("Server running on port 3000"));
