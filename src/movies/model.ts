@@ -36,7 +36,7 @@ export interface IMoviesDocument extends Document {
   };
   lastupdated: string;
   year: number;
-  imbd: {
+  imdb: {
     rating: number;
     votes: number;
     id: number;
@@ -50,11 +50,14 @@ export interface IMoviesDocument extends Document {
 const TomatoesSchema: Schema<ITomatoes> = new Schema(
   {
     viewer: {
-      rating: { type: Number },
-      numReviews: { type: Number },
-      meter: { type: Number },
+      type: {
+        rating: { type: Number },
+        numReviews: { type: Number },
+        meter: { type: Number },
+      },
       required: true,
     },
+
     fresh: Number,
     critic: {
       rating: { type: Number },
@@ -89,7 +92,7 @@ const MovieSchema: Schema<IMoviesDocument> = new Schema({
   },
   lastupdated: { type: String, required: true },
   year: { type: Number, required: true },
-  imbd: {
+  imdb: {
     rating: { type: Number, required: true },
     votes: { type: Number, required: true },
     id: { type: Number, required: true },
