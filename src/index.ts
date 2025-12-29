@@ -5,6 +5,7 @@ import type { Document } from "mongoose";
 import { Schema, model } from "mongoose";
 import bodyParser from "body-parser";
 import { movieRouter } from "./movies/router.ts";
+import { Movies } from "./movies/model.ts";
 // Express app
 const app = express();
 app.use(bodyParser.json());
@@ -20,6 +21,22 @@ mongoose
   .catch((err: Error) => {
     console.error("MongoDB connection error:", err);
   });
-
-// Start server
+await Movies.updateMany(
+  {},
+  [
+    {
+      $set: {
+        "imdb.rating": {
+          $convert: {
+            input: "$imdb.rating",
+            to: "double",
+            onError: 0, // set empty string to 0
+            onNull: 0,
+          },
+        },
+      },
+    },
+  ],
+  { updatePipeline: true }
+);
 app.listen(3001, () => console.log("Server running on port 3001"));

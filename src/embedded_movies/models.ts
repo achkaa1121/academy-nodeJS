@@ -17,7 +17,7 @@ interface ITomatoes extends Document {
   lastUpdated: Date;
 }
 
-export interface IMoviesDocument extends Document {
+export interface IEmbeddedMoviesDocument extends Document {
   plot: string;
   genres: string[];
   runtime: number;
@@ -45,6 +45,8 @@ export interface IMoviesDocument extends Document {
   type: string;
   tomatoes: ITomatoes;
   num_mflix_comments?: number;
+  plot_embedding: Buffer;
+  plot_embedding_voyage_3_large: Buffer;
 }
 
 const TomatoesSchema: Schema<ITomatoes> = new Schema(
@@ -73,7 +75,7 @@ const TomatoesSchema: Schema<ITomatoes> = new Schema(
   { _id: false }
 );
 
-const MovieSchema: Schema<IMoviesDocument> = new Schema({
+const embeddedMovieSchema: Schema<IEmbeddedMoviesDocument> = new Schema({
   plot: { type: String, required: true },
   genres: { type: [String], required: true },
   runtime: { type: Number, required: true },
@@ -101,6 +103,12 @@ const MovieSchema: Schema<IMoviesDocument> = new Schema({
   type: { type: String, required: true },
   tomatoes: TomatoesSchema,
   num_mflix_comments: Number,
+  plot_embedding: { type: Buffer, required: true },
+  plot_embedding_voyage_3_large: { type: Buffer, required: true },
 });
 
-export const Movies = model<IMoviesDocument>("movies", MovieSchema, "movies");
+export const Embedded_Movies = model<IEmbeddedMoviesDocument>(
+  "embedded_movies",
+  embeddedMovieSchema,
+  "embedded_movies"
+);

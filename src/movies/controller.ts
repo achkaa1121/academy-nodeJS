@@ -1,10 +1,11 @@
 import type { Request, Response } from "express";
 import { Movies } from "./model.ts";
+import { Aggregate } from "mongoose";
 export const addMovie = async (req: Request, res: Response) => {
   try {
     await Movies.create({
       plot: "Yes",
-      genre: ["Sci-Fi", "Comedy"],
+      genres: ["Sci-Fi", "Comedy"],
       runtime: 135,
       cast: ["Actor X", "Actor Y"],
       poster: "poster",
@@ -39,7 +40,7 @@ export const imdbChanger = async (req: Request, res: Response) => {
 };
 export const genreChanger = async (req: Request, res: Response) => {
   try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
+    await Movies.updateOne({ plot: "Yes" }, { $push: { genre: "Adventure" } });
     res.status(200);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -47,7 +48,7 @@ export const genreChanger = async (req: Request, res: Response) => {
 };
 export const deleter = async (req: Request, res: Response) => {
   try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
+    await Movies.deleteOne({ plot: "Yes" });
     res.status(200);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -55,7 +56,10 @@ export const deleter = async (req: Request, res: Response) => {
 };
 export const pointFivePlus = async (req: Request, res: Response) => {
   try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
+    await Movies.updateMany(
+      { year: { $gte: 2015 } },
+      { $inc: { "imdb.rating": 0.5 } }
+    );
     res.status(200);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -63,7 +67,11 @@ export const pointFivePlus = async (req: Request, res: Response) => {
 };
 export const plusNine = async (req: Request, res: Response) => {
   try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
+    const plusNineMovies = await Movies.find(
+      { "imdb.rating": { $gte: 9 } },
+      "title"
+    );
+    res.json(plusNineMovies);
     res.status(200);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -71,15 +79,11 @@ export const plusNine = async (req: Request, res: Response) => {
 };
 export const drama = async (req: Request, res: Response) => {
   try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
-    res.status(200);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
-  }
-};
-export const highestReveiw = async (req: Request, res: Response) => {
-  try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
+    const dramaMovies = await Movies.find(
+      { genres: "Drama" },
+      "year imdb.rating"
+    );
+    res.json(dramaMovies);
     res.status(200);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -87,15 +91,23 @@ export const highestReveiw = async (req: Request, res: Response) => {
 };
 export const director = async (req: Request, res: Response) => {
   try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
+    const average = await Movies.aggregate([
+      { $match: { directors: "Steven Spielberg" } },
+      { $group: { _id: null, avgRating: { $avg: "$imdb.rating" } } },
+    ]);
     res.status(200);
+    res.json(average[0].avgRating);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
 };
 export const eachGenre = async (req: Request, res: Response) => {
   try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
+    const result = await Movies.aggregate([
+      { $unwind: "$genres" },
+      { $group: { _id: "$genres", count: { $sum: 1 } } },
+    ]);
+    res.json(result);
     res.status(200);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -103,15 +115,18 @@ export const eachGenre = async (req: Request, res: Response) => {
 };
 export const eachActors = async (req: Request, res: Response) => {
   try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
-    res.status(200);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
-  }
-};
-export const afterTwoThousand = async (req: Request, res: Response) => {
-  try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
+    const numOfActors = await Movies.aggregate([
+      {
+        $project: {
+          _id: 0,
+          title: 1,
+          actorCount: {
+            $size: { $ifNull: ["$cast", []] },
+          },
+        },
+      },
+    ]);
+    res.json(numOfActors);
     res.status(200);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -119,15 +134,19 @@ export const afterTwoThousand = async (req: Request, res: Response) => {
 };
 export const mostGenre = async (req: Request, res: Response) => {
   try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
-    res.status(200);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
-  }
-};
-export const criticNum = async (req: Request, res: Response) => {
-  try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
+    const result = await Movies.aggregate([
+      {
+        $project: {
+          title: 1,
+          genresCount: {
+            $size: { $ifNull: ["$genres", []] },
+          },
+        },
+      },
+      { $sort: { genresCount: -1 } },
+      { $limit: 3 },
+    ]);
+    res.json(result);
     res.status(200);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -135,7 +154,11 @@ export const criticNum = async (req: Request, res: Response) => {
 };
 export const eachGenreIMDB = async (req: Request, res: Response) => {
   try {
-    await Movies.updateOne({ plot: "Yes" }, { $set: { "imdb.rating": 8.2 } });
+    const result = await Movies.aggregate([
+      { $unwind: "$genres" },
+      { $group: { _id: "$genres", avgRating: { $avg: "$imdb.rating" } } },
+    ]);
+    res.json(result);
     res.status(200);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
