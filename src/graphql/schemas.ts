@@ -39,7 +39,6 @@ export const typeDefs = gql`
   }
 
   type Query {
-    movies: [Movie!]!
-    movie(id: ID!): Movie
+    movie(_id: ID): Movie
   }
 `;

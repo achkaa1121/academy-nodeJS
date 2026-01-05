@@ -6,6 +6,7 @@ import { resolvers } from "./graphql/resolvers.ts";
 
 const startServer = async () => {
   const app = express();
+
   const server = new ApolloServer({
     typeDefs,
     resolvers,
