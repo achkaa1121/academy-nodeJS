@@ -21,6 +21,12 @@ export const typeDefs = gql`
     text: String
   }
 
+  type User {
+    name: String!
+    email: String!
+    password: String!
+  }
+
   type Movie {
     id: ID!
     title: String!
@@ -37,7 +43,19 @@ export const typeDefs = gql`
     awards: Awards
     tomatoes: Tomatoes
   }
-
+  input SignupInput {
+    email: String!
+    name: String!
+    password: String!
+  }
+  input LoginInput {
+    email: String!
+    password: String!
+  }
+  type Mutation {
+    signup(input: SignupInput!): User
+    login(input: LoginInput!): User
+  }
   type Query {
     movie(_id: ID): Movie
   }
