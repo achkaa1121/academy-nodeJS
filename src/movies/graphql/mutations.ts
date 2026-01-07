@@ -1,9 +1,8 @@
 import { User } from "../db/models.ts";
 import bcrypt from "bcrypt";
-import dotenv from "dotenv";
-import { IUser } from "../types/movies.ts";
+import { type IUser } from "../types/movies.ts";
 import jwt from "jsonwebtoken";
-dotenv.config();
+
 const SECRET_KEY = process.env.JWT_SECRET;
 export const mutations = {
   signup: async (_: any, { input }: { input: IUser }) => {

@@ -1,5 +1,5 @@
-import { IMoviesDocument, IUserDocument } from "../types/movies.ts";
 import { Schema, model } from "mongoose";
+import { type IMoviesDocument, type IUserDocument } from "../types/movies.ts";
 
 const UserSchema = new Schema<IUserDocument>({
   name: { type: String, required: true },
