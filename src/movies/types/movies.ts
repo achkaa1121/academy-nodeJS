@@ -1,37 +1,53 @@
-import { Document } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 
-export interface IRating {
-  rating: number;
-  numReviews: number;
-  meter: number;
+interface IRating {
+  rating?: number;
+  numReviews?: number;
+  meter?: number;
+}
+interface ITomatoes {
+  viewer: IRating;
+  fresh?: number;
+  critic?: IRating;
+  rotten?: number;
+  dvd?: Date;
+  website?: string;
+  production?: string;
+  lastUpdated: Date;
 }
 
-export interface IMovie {
+export interface IMoviesDocument extends Document {
+  plot?: string;
+  genres?: string[];
+  runtime?: number;
+  cast?: string[];
+  poster?: string;
   title: string;
-  year: number;
-  plot: string;
-  fullplot: string;
-  genre: string[];
-  runtime: number;
-  cast: string[];
-  poster: string;
-  released: Date;
-  languages: string[];
-  directors: string[];
-  awards: {
+  fullplot?: string;
+  languages?: string[];
+  released?: Date;
+  directors?: string[];
+  rated?: string;
+  awards?: {
     wins: number;
     nominations: number;
     text: string;
   };
+  lastUpdated?: string;
+  year: number;
+  imdb?: {
+    rating: number;
+    votes: number;
+    id: number;
+  };
+  countries?: string[];
+  type?: string;
+  tomatoes?: ITomatoes;
+  num_mflix_comments?: number;
+  userID: ObjectId;
 }
-
-export interface IMoviesDocument extends IMovie, Document {
-  title: string;
-}
-export interface IUser {
+export interface IUserDocument extends Document {
   name: string;
   email: string;
   password: string;
 }
-
-export interface IUserDocument extends IUser, Document {}

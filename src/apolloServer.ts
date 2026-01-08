@@ -1,20 +1,20 @@
 import {
-  userTypesDefs,
-  userMutationTypeDefs,
-  movieQueryTypeDefs,
+  aTypeDefs,
+  mutationTypeDefs,
+  queryTypeDefs,
 } from "./movies/graphql/schemas.ts";
 import { mutations } from "./movies/graphql/mutations.ts";
 import { queries } from "./movies/graphql/queries.ts";
 
 export const typeDefs = `
-  ${userTypesDefs}
+  ${aTypeDefs}
 
    type Query {
-    ${movieQueryTypeDefs}
+    ${queryTypeDefs}
   }
 
   type Mutation {
-    ${userMutationTypeDefs}
+    ${mutationTypeDefs}
   }
 
 `;

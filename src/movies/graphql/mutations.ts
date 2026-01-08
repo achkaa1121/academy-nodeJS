@@ -1,11 +1,14 @@
-import { User } from "../db/models.ts";
+import { Movies, User } from "../db/models.ts";
 import bcrypt from "bcrypt";
-import { type IUser } from "../types/movies.ts";
+import type { IUserDocument, IMoviesDocument } from "../types/movies.ts";
 import jwt from "jsonwebtoken";
+import { type IContext } from "../../index.ts";
+import dotenv from "dotenv";
 
+dotenv.config();
 const SECRET_KEY = process.env.JWT_SECRET;
 export const mutations = {
-  signup: async (_: any, { input }: { input: IUser }) => {
+  signup: async (_: any, { input }: { input: IUserDocument }) => {
     const email = input.email;
     const name = input.name;
     const password = input.password;
@@ -23,28 +26,28 @@ export const mutations = {
       return data;
     }
   },
-  login: async (_: any, { input }: { input: IUser }) => {
+  login: async (_: any, { input }: { input: IUserDocument }) => {
     const email = input.email;
     const password = input.password;
     const user = await User.findOne(
       { email: email },
-      { password: 1, email: 1, name: 1 }
+      { password: 1, email: 1, name: 1, _id: 1 }
     );
     if (!user) {
       console.log("User not found");
       throw new Error("User not found");
     }
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log(isMatch);
+    console.log(SECRET_KEY);
     try {
       if (!isMatch) {
         console.log("Password wrong");
       } else {
         const token = jwt.sign(
           {
-            id: user._id,
             email: user.email,
             name: user.name,
+            _id: user._id,
           },
           SECRET_KEY!,
           { expiresIn: "1h" }
@@ -54,6 +57,21 @@ export const mutations = {
       }
     } catch (err) {
       console.log(err, "error");
+    }
+  },
+  addMovie: async (
+    _: any,
+    { input }: { input: IMoviesDocument },
+    { user }: IContext
+  ) => {
+    try {
+      await Movies.create({
+        title: input.title,
+        year: input.year,
+        userId: user._id,
+      });
+    } catch (err) {
+      console.log("Error while adding movie.", err);
     }
   },
 };
