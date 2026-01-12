@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Signup</title>
+  </head>
+  <body>
+    <h1>Signup</h1>
+    <input id="email" type="text" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
+    <button id="signupBtn">Signup</button>
+    <script>
+      const endpoint = "http://localhost:4000/"; // GraphQL серверийн URL
+
+      const signupBtn = document.getElementById("signupBtn");
+      signupBtn.addEventListener("click", async () => {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        // localStorage-аас token-г авна
+
+        // GraphQL mutation
+        const mutation = `
+        mutation Signup($input: SignupInput!) {
+        signup(input: $input) {
+            name
+            password
+  }
+}
+      `;
+        const name = "Human";
+        try {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              query: mutation,
+              variables: { input: { email, password, name } },
+            }),
+          });
+
+          const result = await response.json();
+          console.log(result);
+        } catch (error) {
+          console.error(error);
+          message.textContent = "Error connecting to server";
+        }
+      });
+      const login = () => {
+        window.location.href = "/login.html";
+      };
+    </script>
+    <button onclick="login()">Login</button>
+  </body>
+</html>

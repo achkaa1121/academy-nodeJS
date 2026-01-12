@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { User } from "./movies/db/models.ts";
 dotenv.config();
+
 mongoose
   .connect(
     "mongodb+srv://Achka1121:QrPqkWmvZrs2v835@backend-lesson.zrskizs.mongodb.net/sample_mflix?appName=backend-lesson"
@@ -17,8 +18,10 @@ mongoose
     console.error("MongoDB connection error:", err);
   });
 
+const SECRET_KEY = process.env.JWT_SECRET || "secret";
+
 export interface IContext {
-  user: {
+  user?: {
     email: string;
     _id: ObjectId;
   };
@@ -32,28 +35,23 @@ const server = new ApolloServer<IContext>({
 const { url } = await startStandaloneServer(server, {
   listen: { port: 4000 },
   context: async ({ req }) => {
-    // header token oo avna
     const token = req.headers.authorization || "";
-    if (token && process.env.JWT_SECRET) {
-      try {
-        jwt.verify(token, process.env.JWT_SECRET);
-      } catch (err) {
-        console.log(err, "Invalid or expired token");
-      }
-      const user = jwt.decode(token);
-      const userExist = await User.findOne({ email: user.email });
-      return {
-        user: userExist,
-      };
-    }
-    // user ee db ees haina
 
-    ///token
-    // return {
-    //   user: {
-    //     name: "asdasd",
-    //   }, // iishee damjuulna
-    // };
+    const context: any = {};
+
+    try {
+      const user: any = jwt.verify(token, SECRET_KEY);
+
+      const userExist = await User.findOne({ email: user.email });
+
+      if (userExist) {
+        context.user = userExist;
+      }
+    } catch (error) {
+      return context;
+    }
+
+    return context;
   },
 });
 

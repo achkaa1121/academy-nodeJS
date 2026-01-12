@@ -1,7 +1,7 @@
 export const aTypeDefs = `
   scalar Date
   type User {
-    name: String!
+    name: String
     email: String!
     password: String!
   }
@@ -39,7 +39,7 @@ export const aTypeDefs = `
   }
   input SignupInput {
     email: String!
-    name: String!
+    name: String
     password: String!
   }
   input LoginInput {

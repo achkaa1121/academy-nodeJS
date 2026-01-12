@@ -4,9 +4,9 @@ import type { IUserDocument, IMoviesDocument } from "../types/movies.ts";
 import jwt from "jsonwebtoken";
 import { type IContext } from "../../index.ts";
 import dotenv from "dotenv";
-
 dotenv.config();
-const SECRET_KEY = process.env.JWT_SECRET;
+
+const SECRET_KEY = process.env.JWT_SECRET || "secret";
 export const mutations = {
   signup: async (_: any, { input }: { input: IUserDocument }) => {
     const email = input.email;
@@ -43,15 +43,17 @@ export const mutations = {
       if (!isMatch) {
         console.log("Password wrong");
       } else {
+        console.log("SECRET_KEYlogin", SECRET_KEY);
         const token = jwt.sign(
           {
             email: user.email,
             name: user.name,
             _id: user._id,
           },
-          SECRET_KEY!,
+          SECRET_KEY,
           { expiresIn: "1h" }
         );
+
         console.log("Logged in successfully", token);
         return token;
       }
@@ -64,12 +66,15 @@ export const mutations = {
     { input }: { input: IMoviesDocument },
     { user }: IContext
   ) => {
+    console.log("user", user);
     try {
-      await Movies.create({
-        title: input.title,
-        year: input.year,
-        userId: user._id,
-      });
+      if (user) {
+        await Movies.create({
+          title: input.title,
+          year: input.year,
+          userID: user._id,
+        });
+      }
     } catch (err) {
       console.log("Error while adding movie.", err);
     }
